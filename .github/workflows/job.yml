@@ -18,3 +18,8 @@ jobs:
         version: v5.6.3
 
     - run: make provision
+
+    - run: sleep 15 # In GH Actions seems to be the pulling a bit slow, probably low resources specs
+
+    - name: Check gRPC 
+      run: make test
