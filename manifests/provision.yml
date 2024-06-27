@@ -1,0 +1,103 @@
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: kube-prometheus-stack
+  namespace: kube-system
+spec:
+  repo: https://prometheus-community.github.io/helm-charts
+  chart: kube-prometheus-stack
+  targetNamespace: monitoring
+  createNamespace: true
+  version: 60.4.0
+  valuesContent: |-
+    defaultRules:
+      create: false
+
+    alertmanager:
+      enabled: false
+
+    grafana:
+      enabled: true
+      defaultDashboardsEditable: false
+      adminPassword: admin
+      ingress:
+        enabled: true
+        annotations:
+          ingress.kubernetes.io/ssl-redirect: "false"
+        hosts:
+          - grafana-7f000001.nip.io
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cosmos-sdk
+  labels:
+    app: cosmos-sdk
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cosmos-sdk
+  template:
+    metadata:
+      labels:
+        app: cosmos-sdk
+    spec:
+      volumes:
+      - name: data
+        hostPath:
+          path: /mnt/data
+          type: DirectoryOrCreate
+      initContainers:
+      - name: init
+        image: ghcr.io/cosmos/simapp:v0.50
+        volumeMounts:
+        - name: data
+          mountPath: /root
+        command: 
+          - simd
+        args:
+          - "testnet"
+          - "init-files"
+          - "--keyring-backend"
+          - "test"
+          - "--v"
+          - "1"
+      containers:
+      - name: cosmos-sdk
+        image: ghcr.io/cosmos/simapp:v0.50
+        tty: true
+        ports:
+          - name: grpc
+            containerPort: 9090
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 1
+            memory: 1Gi
+        command: 
+          - simd
+        args:
+          - "testnet"
+          - "start"
+        volumeMounts:
+        - name: data
+          mountPath: /root
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: cosmos-sdk
+  name: cosmos-sdk
+spec:
+  ports:
+  - name: grpc
+    port: 9090
+    protocol: TCP
+    targetPort: grpc
+  selector:
+    app: cosmos-sdk
+  type: ClusterIP

@@ -1,0 +1,20 @@
+name: Test
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup k3d
+      uses: rinx/setup-k3d@v0.0.4
+      with:
+        skipClusterCreation: true
+        version: v5.6.3
+
+    - run: make provision
