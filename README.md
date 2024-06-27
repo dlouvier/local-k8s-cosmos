@@ -6,6 +6,9 @@ The cluster includes Cosmos SDK, which is initialized locally with a local test 
 
 It is designed to run easily in a [CI pipeline](.github/workflows/job.yml), as the cluster takes less than a minute to start, demonstrating how it can be provisioned simply and effectively.
 
+## Demo
+![Video](https://github.com/dlouvier/local-k8s-cosmos/assets/13359249/6539ce0c-156b-4bf6-bcb5-52b72b9e2172)
+
 ## Requirements
 
 - **Docker**
