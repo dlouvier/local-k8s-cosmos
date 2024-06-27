@@ -4,7 +4,7 @@ This repository provides basic examples for provisioning a local Kubernetes K3s 
 
 The cluster includes Cosmos SDK, which is initialized locally with a local test net that can be queried via the SDK.
 
-It is designed to run easily in a CI/CD pipeline, as the cluster takes less than a minute to start, demonstrating how it can be provisioned simply and effectively.
+It is designed to run easily in a [CI pipeline](.github/workflows/job.yml), as the cluster takes less than a minute to start, demonstrating how it can be provisioned simply and effectively.
 
 ## Requirements
 
@@ -52,9 +52,9 @@ It is designed to run easily in a CI/CD pipeline, as the cluster takes less than
 
    This will perform a simple test that runs gRPC requests to the Cosmos SDK.
 
-1. Access to Grafana:
-   To get the Grafana URL and credentials, use:
+1. Access to Grafana
 
+   To get the Grafana URL and credentials, use:
    ```bash
    make grafana
    ```
